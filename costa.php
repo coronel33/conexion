@@ -16,23 +16,30 @@ $sql_create_costa = "CREATE TABLE IF NOT EXISTS costa (
     reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 )";
 
-if ($conn->query($sql_create_table) === FALSE) {
+if ($conn->query($sql_create_costa) === FALSE) {
     die("Error al crear la tabla: " . $conn->error);
 }
 
 // Obtener datos enviados por POST
-$recipe_name = $_POST['recipe_name'];
-$ingredients = $_POST['ingredients'];
-$steps = $_POST['steps'];
-$cooking_time = $_POST['cooking_time'];
+if (isset($_POST['recipe_name'], $_POST['ingredients'], $_POST['steps'], $_POST['cooking_time'])) {
+    $recipe_name = $_POST['recipe_name'];
+    $ingredients = $_POST['ingredients'];
+    $steps = $_POST['steps'];
+    $cooking_time = $_POST['cooking_time'];
 
-// Insertar datos en la base de datos
-$sql = "INSERT INTO recetas (nombre, ingredientes, pasos, tiempo_coccion) VALUES ('$recipe_name', '$ingredients', '$steps', '$cooking_time')";
+    // Usar consultas preparadas para evitar inyecciones SQL
+    $stmt = $conn->prepare("INSERT INTO costa (nombre, ingredientes, pasos, tiempo_coccion) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("sssi", $recipe_name, $ingredients, $steps, $cooking_time);
 
-if ($conn->query($sql) === TRUE) {
-    echo "Nueva receta registrada exitosamente";
+    if ($stmt->execute() === TRUE) {
+        echo "Nueva receta registrada exitosamente";
+    } else {
+        echo "Error: " . $stmt->error;
+    }
+
+    $stmt->close();
 } else {
-    echo "Error: " . $sql . "<br>" . $conn->error;
+    echo "Todos los campos son obligatorios.";
 }
 
 $conn->close();
