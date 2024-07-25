@@ -38,7 +38,7 @@ if (isset($_POST['recipe_name'], $_POST['ingredients'], $_POST['steps'], $_POST[
     }
 
     $stmt->close();
-} else {
+} else { 
     echo "Todos los campos son obligatorios.";
 }
 
