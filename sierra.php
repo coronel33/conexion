@@ -24,7 +24,7 @@ if (isset($_POST['recipe_name'], $_POST['ingredients'], $_POST['steps'], $_POST[
     $recipe_name = $_POST['recipe_name'];
     $ingredients = $_POST['ingredients'];
     $steps = $_POST['steps'];
-    $cooking_time = $_POST['cooking_time'];s
+    $cooking_time = $_POST['cooking_time'];
 
     // Usar consultas preparadas para evitar inyecciones SQL
     $stmt = $conn->prepare("INSERT INTO sierra (nombre, ingredientes, pasos, tiempo_coccion) VALUES (?, ?, ?, ?)");
